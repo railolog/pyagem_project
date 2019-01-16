@@ -10,6 +10,9 @@ else:
     game_number = int(game_number)
 if game_number > 54:
     game_number = 54
+elif game_number <= 0:
+    game_number = 1
+
 pygame.init()
 size = width, height = 1280, 720
 screen = pygame.display.set_mode(size)
@@ -19,7 +22,6 @@ HPnPWnRange = {'archer': [50, 35, 4], 'elven': [10, 80, 3],
                'skeleton': [41, 35, 4]}
 heroes = {}
 victory, lose = [False] * 2
-mouse_im = pygame.image.load('media/mouse_im.png')
 
 
 def draw(animated=None):
@@ -31,7 +33,6 @@ def draw(animated=None):
             screen.blit(key.anim, value)
         else:
             screen.blit(key.stand, value)
-    screen.blit(mouse_im, mouse_pos)
     pygame.display.flip()
 
 
@@ -317,7 +318,7 @@ def AI():
     for enemy in enemies:
         attackables = enemy.attackable_heroes()
         if len(attackables) == 0:
-            break
+            continue
         for hero in attackables:
             if hero.hp - enemy.pw <= 0:
                 board.board[hero.y][hero.x] = [board.board[hero.y][hero.x],
@@ -329,7 +330,7 @@ def AI():
     for enemy in enemies:
         attackables = enemy.attackable_heroes()
         if len(attackables) == 0:
-            break
+            continue
         hero = min(attackables, key=lambda x: x.hp)
         board.board[hero.y][hero.x] = [board.board[hero.y][hero.x],
                                        'attackable']
@@ -380,14 +381,17 @@ def new_game(game_number):
             qwe = Enemy('orc', 14, y)
         for y in range(0, 6, 2):
             asd = Enemy('skeleton', 16, y)
+    elif game_number == 3:
+        elf = Hero('elven', 0, 2)
+        asd = Enemy('skeleton', 3, 3)
     else:
-        heroes = ['archer', 'knight', 'elven']
+        heroes_names = ['archer', 'knight', 'elven']
         enemies = ['skeleton', 'orc']
         for i in range(game_number):
             x, y = randint(0, 8), randint(0, 5)
             while board.board[y][x] != 0:
                 x, y = randint(0, 8), randint(0, 5)
-            hero = Hero(choice(heroes), x, y)
+            hero = Hero(choice(heroes_names), x, y)
             x, y = randint(10, 18), randint(0, 5)
             while board.board[y][x] != 0:
                 x, y = randint(10, 18), randint(0, 5)
@@ -396,8 +400,6 @@ def new_game(game_number):
 
 clock = pygame.time.Clock()
 code = 0
-pygame.mouse.set_visible(False)
-mouse_pos = [0, 0]
 tut1 = pygame.image.load('media/screenshots/1.png')
 tut2 = pygame.image.load('media/screenshots/2.png')
 new_game(game_number)
@@ -405,34 +407,66 @@ new_game(game_number)
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.MOUSEMOTION:
-            mouse_pos = event.pos           
-        if event.type == pygame.ACTIVEEVENT:
-            if event.gain == 0:
-                mouse_pos = -50, -50
+            running = False         
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 board.get_click(event.pos)
     if victory:
         game_number += 1
+        alpha_lvl = 0
         win_image = pygame.image.load('media/victory/1.jpg')
-        i = 0
+        win_image.set_alpha(alpha_lvl)
         screen.blit(win_image, (0, 0))
         pygame.display.flip()
         time = clock.tick()
-        while i < 5:
-            i += clock.tick() / 1000
+        while alpha_lvl < 30:
+            alpha_lvl += clock.tick() / 100
+            win_image.set_alpha(int(alpha_lvl))
+            screen.blit(win_image, (0, 0))
+            pygame.display.flip()           
         new_game(game_number)
         victory = False
     if lose:
-        game_over = pygame.image.load('media/game_over/1.jpg')
-        i = 0
-        screen.blit(game_over, (0, 0))
+        l1 = pygame.image.load('media/game_over/01.jpg')
+        l2 = pygame.image.load('media/game_over/02.jpg')
+        l3 = pygame.image.load('media/game_over/03.jpg')
+        l4 = pygame.image.load('media/game_over/04.jpg')
+        game_over = [l1, l2, l3, l4]
+        game_over2 = [(l1, (0, 0)), (l4, (640, 360)),
+                      (l2, (640, 0)), (l3, (0, 360))]
+        '''pos1 = [-640, -360]
+        pos2 = [1280, -360]
+        pos3 = [-640, 720]
+        pos4 = [1280, 720]
         pygame.display.flip()
         time = clock.tick()
-        while i < 5:
-            i += clock.tick() / 1000
+        while pos1[0] < 0:
+            time = clock.tick() / 1000
+            pos1[0] += time * 320
+            pos1[1] += time * 180
+            pos2[0] += time * -320
+            pos2[1] += time * 180
+            pos3[0] += time * 320
+            pos3[1] += time * -180
+            pos4[0] += time * -320
+            pos4[1] += time * -180
+            screen.blit(l1, pos1)
+            screen.blit(l2, pos2)
+            screen.blit(l3, pos3)
+            screen.blit(l4, pos4)
+            pygame.display.flip()
+        i = clock.tick()
+        i = 0
+        while i < 3:
+            i += clock.tick() / 1000'''
+        for l, pos in game_over2:
+            alpha_lvl = 0
+            time = clock.tick()
+            while alpha_lvl < 20:
+                alpha_lvl += clock.tick() / 50
+                l.set_alpha(int(alpha_lvl))
+                screen.blit(l, pos)
+                pygame.display.flip()             
         new_game(game_number)
         lose = False
     draw()
