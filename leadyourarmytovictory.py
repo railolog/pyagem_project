@@ -406,8 +406,10 @@ def new_game(game_number):
             while board.board[y][x] != 0:
                 x, y = randint(10, 18), randint(0, 5)
             enemy = Enemy(choice(enemies), x, y)
+    draw()
 
 
+iter_count = 0
 clock = pygame.time.Clock()
 code = 0
 tut1 = pygame.image.load('media/screenshots/1.png')
@@ -519,7 +521,9 @@ while running:
         '''
         new_game(game_number)
         lose = False
-    draw()
+    iter_count += 1
+    if iter_count % 5 == 0:
+        draw()
 
 
 pygame.quit()
