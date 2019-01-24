@@ -8,7 +8,9 @@ if game_number == '':
     game_number = 1
 else:
     game_number = int(game_number)
-if game_number > 54:
+if game_number == 228:
+    pass
+elif game_number > 54:
     game_number = 54
 elif game_number <= 0:
     game_number = 1
@@ -234,6 +236,14 @@ class Hero:
         while v_x != 0 or v_y != 0:
             pos = heroes[self]
             d_x, d_y = x1 - int(pos[0]), y1 - int(pos[1])
+            if abs(d_x) <= 5:
+                d_x = 0
+                pos[0] = x1
+                v_x = 0
+            if abs(d_y) <= 5:
+                d_y = 0
+                pos[1] = y1
+                v_y = 0
             if d_x < 0:
                 v_x = -35
             elif d_x > 0:
@@ -381,7 +391,7 @@ def new_game(game_number):
             qwe = Enemy('orc', 14, y)
         for y in range(0, 6, 2):
             asd = Enemy('skeleton', 16, y)
-    elif game_number == 3:
+    elif game_number == 228:
         elf = Hero('elven', 0, 2)
         asd = Enemy('skeleton', 3, 3)
     else:
@@ -431,14 +441,25 @@ while running:
         l2 = pygame.image.load('media/game_over/02.jpg')
         l3 = pygame.image.load('media/game_over/03.jpg')
         l4 = pygame.image.load('media/game_over/04.jpg')
+        l_main = pygame.image.load('media/game_over/1.jpg')
         game_over = [l1, l2, l3, l4]
         game_over2 = [(l1, (0, 0)), (l4, (640, 360)),
                       (l2, (640, 0)), (l3, (0, 360))]
-        '''pos1 = [-640, -360]
+        for l, pos in game_over2:
+            alpha_lvl = 0
+            time = clock.tick()
+            while alpha_lvl < 200:
+                alpha_lvl += clock.tick() / 1.5
+                l.set_alpha(int(alpha_lvl))
+                draw()
+                screen.blit(l, pos)
+                pygame.display.flip()
+        draw()
+
+        pos1 = [-640, -360]
         pos2 = [1280, -360]
         pos3 = [-640, 720]
         pos4 = [1280, 720]
-        pygame.display.flip()
         time = clock.tick()
         while pos1[0] < 0:
             time = clock.tick() / 1000
@@ -455,18 +476,47 @@ while running:
             screen.blit(l3, pos3)
             screen.blit(l4, pos4)
             pygame.display.flip()
+        screen.blit(l_main, (0, 0))
+        pygame.display.flip()
         i = clock.tick()
         i = 0
         while i < 3:
-            i += clock.tick() / 1000'''
+            i += clock.tick() / 1000
+# ########################################
+        '''for l, pos in game_over2:
+            alpha_lvl = 0
+            time = clock.tick()
+            while alpha_lvl < 200:
+                alpha_lvl += clock.tick() / 1.5
+                l.set_alpha(int(alpha_lvl))
+                draw()
+                screen.blit(l, pos)
+                pygame.display.flip()
+        draw()
         for l, pos in game_over2:
             alpha_lvl = 0
             time = clock.tick()
-            while alpha_lvl < 20:
-                alpha_lvl += clock.tick() / 50
+            while alpha_lvl < 200:
+                alpha_lvl += clock.tick() / 1.5
                 l.set_alpha(int(alpha_lvl))
                 screen.blit(l, pos)
-                pygame.display.flip()             
+                pygame.display.flip()        
+        screen.blit(l_main, (0, 0))
+        pygame.display.flip()
+        clock.tick()
+        i = 0
+        while i < 3000:
+            i += clock.tick()'''
+        '''
+        alpha_lvl = 0
+        time = clock.tick()
+        while alpha_lvl < 200:
+            alpha_lvl += clock.tick() / 2
+            l1.set_alpha(int(alpha_lvl))
+            draw()
+            screen.blit(l1, (0, 0))
+            pygame.display.flip()
+        '''
         new_game(game_number)
         lose = False
     draw()
