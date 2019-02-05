@@ -280,7 +280,6 @@ def pause_menu():
     pygame.mixer.music.play(-1)
 
 
-
 def draw(animated=None):
     bg = pygame.image.load('media/bg/bg1.jpg')
     screen.blit(bg, (0, 0))
@@ -448,9 +447,9 @@ class Hero:
                         self.y * 60 + board.top + 5]
         board.board[y][x] = self
         self.Range = HPnPWnRange[char][2]
-        self.hurt_sound = pygame.mixer.Sound('media/sounds/{}/hurt.wav'.\
+        self.hurt_sound = pygame.mixer.Sound('media/sounds/{}/hurt.wav'.
                                              format(char))
-        self.attack_sound = pygame.mixer.Sound('media/sounds/{}/attack.wav'.\
+        self.attack_sound = pygame.mixer.Sound('media/sounds/{}/attack.wav'.
                                                format(char))
 
     def reachable_cells(self):
@@ -479,8 +478,9 @@ class Hero:
                 while i < len(self.attack_anim):
                     time = clock.tick(30) / 1000
                     i = (i + time * 10)
-                    if int(i % 12) == 8 and not played\
-                    and (self.name == 'archer' or self.name == 'skeleton'):
+                    if int(i % 12) == 8 and not played and (
+                        self.name == 'archer' or self.name == 'skeleton'
+                    ):
                         self.attack_sound.play()
                         played = True
                     if self.x > x:
@@ -582,7 +582,7 @@ class Enemy(Hero):
                                             1, 0) for i in range(1, vals[char])]
             self.hurt_anim = [rotate.flip(pygame.image.load
                                           ('media/{}/hurt/{}.png'.
-                                           format(char,str(i))),
+                                           format(char, str(i))),
                                           1, 0) for i in range(1, 7)]
         self.attack_anim = [rotate.flip(i, 1, 0) for i in self.attack_anim]
         self.walk_anim = [rotate.flip(i, 1, 0) for i in self.walk_anim]
@@ -658,7 +658,7 @@ def AI():
         choosen_hero = min(variants, key=lambda x: x[1])[0]
         x1, y1 = choosen_hero.x, choosen_hero.y
         cells = choosen_enemy.reachable_cells()
-    choosen_cell = min([i for i in cells], key=lambda x: abs(x1 - x[0]) +\
+    choosen_cell = min([i for i in cells], key=lambda x: abs(x1 - x[0]) +
                        abs(y1 - x[1]))
     x, y = choosen_cell
     choosen_enemy.move(x, y)
