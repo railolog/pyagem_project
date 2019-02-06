@@ -1,5 +1,4 @@
 import sys
-import json
 import pygame
 import traceback
 from time import sleep
@@ -24,6 +23,8 @@ mega_victory_sound = pygame.mixer.Sound('media/sounds/mega_victory.wav')
 victory_sound = pygame.mixer.Sound('media/sounds/victory.wav')
 game_over_sound = pygame.mixer.Sound('media/sounds/game_over.wav')
 click_sound = pygame.mixer.Sound('media/sounds/click.wav')
+target1_sound = pygame.mixer.Sound('media/sounds/target1.wav')
+target2_sound = pygame.mixer.Sound('media/sounds/target2.wav')
 
 menu_music = pygame.mixer.Sound('media/sounds/menu.wav')
 menu_music.set_volume(0.8)
@@ -82,12 +83,13 @@ class Font(pygame.sprite.Sprite):
         self.rect.y = y
 
 
-def main_menu():
+def main_menu(from_pm=False):
     global game_number
     global start_screen_flag
     global new_game_flag
-    pygame.mixer.music.stop()
-    menu_music.play(-1)
+    if not from_pm:
+        pygame.mixer.music.stop()
+        menu_music.play(-1)
     start_bg = pygame.image.load('media/bg/start.jpg')
     screen.blit(start_bg, (0, 0))
     my_font = pygame.font.SysFont('gabriola', 72)
@@ -110,6 +112,7 @@ def main_menu():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                click_sound.play()
                 for sprite in text_lines:
                     if sprite.rect.collidepoint(event.pos):
                         if sprite.text == 'новая игра':
@@ -136,13 +139,14 @@ def main_menu():
             if sprite.rect.collidepoint(pos):
                 screen.blit(bg, (sprite.rect.x, sprite.rect.y + 7))
         pygame.display.flip()
-    menu_music.stop()
-    pygame.mixer.music.play(-1)
+    if not start_screen_flag:
+        menu_music.stop()
+        pygame.mixer.music.play(-1)
 
 
 def start_screen():
-    pygame.mixer.music.stop()
-    menu_music.play(-1)
+    '''pygame.mixer.music.stop()
+    menu_music.play(-1)'''
     start_bg = pygame.image.load('media/bg/start.jpg')
     screen.blit(start_bg, (0, 0))
     write()
@@ -276,8 +280,9 @@ def pause_menu():
         elif event.type == pygame.KEYDOWN:
             if event.unicode == '\x1b':
                 running = False
-    menu_music.stop()
-    pygame.mixer.music.play(-1)
+    if not main_menu_flag:
+        menu_music.stop()
+        pygame.mixer.music.play(-1)
 
 
 def draw(animated=None):
@@ -667,6 +672,8 @@ def AI():
 def new_game(game_number):
     global board
     global heroes
+    global code
+    code = 0
     board = Board(19, 6)
     board.set_view(50, 330, 60)
     heroes = {}
@@ -736,15 +743,15 @@ while running:
     elif event.type == pygame.KEYDOWN:
         if event.unicode == '\x1b':
             pause_menu()
+    if main_menu_flag:
+        main_menu_flag = False
+        main_menu(True)
     if start_screen_flag:
         start_screen_flag = False
         start_screen()
     if new_game_flag:
         new_game_flag = False
         new_game(game_number)
-    if main_menu_flag:
-        main_menu_flag = False
-        main_menu()
     if victory:
         pygame.mixer.music.stop()
         game_number += 1
@@ -820,6 +827,5 @@ while running:
         lose = False
         pygame.mixer.music.play(-1)
     draw()
-
 
 pygame.quit()
