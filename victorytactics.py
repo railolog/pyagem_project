@@ -669,6 +669,13 @@ def AI():
     choosen_enemy.move(x, y)
 
 
+def heal():
+    for i in board.board:
+        for object in i:
+            if type(object) == Hero:
+                object.hp = object.full_hp
+
+
 def new_game(game_number):
     global board
     global heroes
@@ -731,6 +738,7 @@ start_screen_flag = False
 new_game_flag = False
 main_menu_flag = False
 main_menu()
+cheat = ''
 
 while running:
     event = pygame.event.wait()
@@ -743,6 +751,24 @@ while running:
     elif event.type == pygame.KEYDOWN:
         if event.unicode == '\x1b':
             pause_menu()
+        else:
+            try:
+                new = int(event.unicode)
+                cheat += str(new)
+                if '787898' in cheat:
+                    cheat = ''
+                    heal()
+                elif '7878992' in cheat:
+                    cheat = ''
+                    game_number += 1
+                    new_game(game_number)
+                elif '7878991' in cheat:
+                    if game_number > 1:
+                        cheat = ''
+                        game_number -= 1
+                        new_game(game_number)
+            except:
+                pass
     if main_menu_flag:
         main_menu_flag = False
         main_menu(True)
