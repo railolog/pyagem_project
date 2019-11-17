@@ -285,8 +285,10 @@ def pause_menu():
         pygame.mixer.music.play(-1)
 
 
+bg = pygame.image.load('media/bg/bg1.jpg')
+
+
 def draw(animated=None):
-    bg = pygame.image.load('media/bg/bg1.jpg')
     screen.blit(bg, (0, 0))
     board.render()
     for event in pygame.event.get():
@@ -310,8 +312,8 @@ def draw(animated=None):
 running = True
 
 blue_rect = pygame.Surface((60, 60))  # the size of your rect
-blue_rect.set_alpha(50)                # alpha level
-blue_rect.fill(pygame.Color('blue'))           # this fills the entire surface
+blue_rect.set_alpha(50)               # alpha level
+blue_rect.fill(pygame.Color('blue'))  # this fills the entire surface
 red_rect = pygame.Surface((60, 60))
 red_rect.set_alpha(50)
 red_rect.fill(pygame.Color('red'))
